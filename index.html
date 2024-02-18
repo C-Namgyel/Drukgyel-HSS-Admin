@@ -1,0 +1,79 @@
+<html lang="en">
+    <head>
+        <title>Drukgyel HSS Admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" type="image/x-icon" href="./assets/logo.png">
+    </head>
+    <body>
+        <!-- Splash Screen -->
+        <div id="splashDiv" style="position: fixed; left: 0%; top: 0%; width: 100%; height: 100%; background-color: #0989EC; z-index: 5">
+            <div id="splashLogo" style="width: 50%; height: 50%; position: absolute; left: 25%; top: 25%; scale: 0; background-image: url('assets/logo.png'); background-position: center; background-repeat: no-repeat; background-size: contain; animation-name: splash; animation-duration: 0.75s; animation-fill-mode: forwards; animation-timing-function: cubic-bezier(0, 0.75, 1);"></div>
+            <b id="splashLoad" style="width: 100%; position: absolute; top: 75%; text-align: center; font-size: 7vw;"></b>
+        </div>
+        <!-- Heading -->
+        <div style="width: 100%; height: 75px; position: fixed; top: 0%; left: 0%; background-image: linear-gradient(#0989EC, #0989EC, #0989EC, #0989EC, white); text-align: center; font-size: 30px; color: white; line-height: 62.5px; z-index: 1;">
+            <b id="header">School Profile</b>
+            <div id="navBtn" onclick="navOpen()" style="position: fixed; height: 20px; width: auto; left: 15px; top: 20px;">
+                <img src="./assets/menu.svg" style="height: 100%;">
+            </div>
+        </div>
+        <!-- Nav -->
+        <div id="navBarrier" onclick="navClose()" style="width: 100%; height: 100%; position: fixed; left: 0%; top: 0%; background-color: rgba(0, 0, 0, 0.5); opacity: 50%; z-index: 1;" hidden></div>
+        <div id="navDiv" style="width: 75%; height: 100%; position: fixed; left: -75%; top: 0%; background-color: white; z-index: 1; overflow: auto;">
+            <div style="width: 100%; height: 150px; position: absolute; left: 0%; top: 0%; background-color: #0989EC;">
+                <div id="profilePic" style="position: absolute; height: 50px; width: 50px; overflow: hidden; left: 15px; top: 25px; border-radius: 100%; text-align: center; background-image: url('./assets/logo.png'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
+                <b id="profileName" style="position: absolute; width: 100%; top: 85px; left: 15px; font-size: 20px; color: white;">Drukgyel HSS</b>
+                <a id="profileEmail" style="position: absolute; width: 100%; top: 110px; left: 15px; font-size: 15px; color: white;">EVER VICTOROUS</a>
+                <button onclick="navClose()" style="position: absolute; top: 15px; right: 15px; background-color: red;">X</button>
+            </div>
+            <div id="navSubHolder" style="position: absolute; left: 15px; top: 175px; width: 90%">
+            </div>
+        </div>
+        <!-- Screens -->
+        <div id="School Profile" class="scrn" hidden>
+            <div style="width: 90%; position: absolute; left: 5%; top: 80px; text-align: left;">
+                Principal: <input class="schoolProfile" id="principal" type="text" placeholder="Name"><hr>
+                Vice Principal: <input class="schoolProfile" id="vp1" type="text" placeholder="Name"><hr>
+                Vice Principal: <input class="schoolProfile" id="vp2" type="text" placeholder="Name"><hr>
+                Teachers: <input class="schoolProfile" id="teachers" type="number" placeholder="Number"><hr>
+                Supporting Staffs: <input class="schoolProfile" id="supportingStaffs" type="number" placeholder="Number"><hr>
+                Boys: <input class="schoolProfile" id="boys" type="number" placeholder="Number"><hr>
+                Girls: <input class="schoolProfile" id="girls" type="number" placeholder="Number"><hr>
+                Day Scholars: <input class="schoolProfile" id="dayScholars" type="number" placeholder="Number"><hr>
+                Boarders: <input class="schoolProfile" id="boarders" type="number" placeholder="Number"><hr><br>
+                <button id="schoolProfileUpload">Upload</button>
+            </div>
+        </div>
+        <div id="About School" class="scrn" hidden>
+            <div style="width: 90%; position: absolute; left: 5%; top: 80px; text-align: left;">
+                <textarea id="aboutDiv" style="width: 100%;"></textarea>
+                <br><br>
+                <button id="aboutUpload">Upload</button>
+            </div>
+        </div>
+        <div id="Contacts" class="scrn" hidden>
+            <div id="contactsDiv" style="width: 90%; position: absolute; left: 5%; top: 80px; text-align: left;">
+                <table border style="width: 100%; border-collapse: collapse;">
+                    <tbody id="contactsTable" style="width: 100%;">
+                        <tr style="width: 100%;">
+                            <th style="width: 30%;">Name</th><th style="width: 30%;">Title</th><th style="width: 30%;">Contact</th><th style="width: 10%;"></th>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="contactsAdd">Add</button><br><br><br>
+                <button id="contactsUpload">Upload</button>
+
+            </div>
+        </div>
+    </body>
+    <script>
+setTimeout(function() {
+    if (document.getElementById("splashDiv") != null && document.getElementById("splashLoad").innerHTML == "") {
+        document.getElementById("splashLoad").innerHTML = "Failed to load<br>Refresh the page"
+    }
+}, 5000)
+    </script>
+    <script src="./functions.js"></script>
+    <script src="./code.js" type="module"></script>
+</html>

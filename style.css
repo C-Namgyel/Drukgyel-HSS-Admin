@@ -1,0 +1,82 @@
+@keyframes splash {
+    0% {scale: 0%;}
+    100% {scale: 100%;}
+}
+@keyframes navOpen {
+    0% {left: -75%}
+    100% {left: 0%}
+}
+@keyframes navClose {
+    0% {left: 0%}
+    100% {left: -75%}
+}
+@keyframes fadeIn {
+    0% {opacity: 0%;}
+    100% {opacity: 100%;}
+}
+@keyframes fadeOut {
+    0% {opacity: 100%;}
+    100% {opacity: 0%;}
+}
+
+/* Class */
+.scrn {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0%;
+    top: 0%;
+    overflow: auto;
+    overflow-wrap: break-word;
+}
+.about {
+    border-width: 0px 0px 1px 0px;
+    border-style: solid;
+    border-color: grey;
+    width: 100%;
+    text-align: left;
+    font-size: 4vw;
+}
+
+/* Elements */
+.addButton {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 10vw;
+    border: none;
+    border-radius: 3vw;
+    position: fixed;
+    bottom: 5%;
+    right: 5%;
+    width: 15%;
+    aspect-ratio: 1/1;
+}
+
+/* Google Login Button */
+
+.google-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    background-color: #ffffff;
+    border-style: solid;
+    border-radius: 2vw;
+    border-color: black;
+    border-width: 1px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+}
+
+.google-button:hover {
+    background-color: #f0f0f0;
+}
+
+.google-logo {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
