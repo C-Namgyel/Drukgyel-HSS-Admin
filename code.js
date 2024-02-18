@@ -304,7 +304,7 @@ document.getElementById("contactsUpload").onclick = function(eve) {
         tempData[o] = {
             name: document.getElementById(`${o}.0`).value.trim(),
             title: document.getElementById(`${o}.1`).value.trim(),
-            contacts: document.getElementById(`${o}.2`).value.trim()
+            contact: document.getElementById(`${o}.2`).value.trim()
         }
     }
     let approved = true;
