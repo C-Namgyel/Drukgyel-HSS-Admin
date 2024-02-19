@@ -159,25 +159,8 @@ getData("startup", function (res) {
 
     // Contacts
     let contacts = data.contacts;
-    let seq = ["name", "title", "contact"];
     for (let p in contacts) {
-        let tr = document.createElement("tr");
-        tr.style = "width: 100%;";
-        for (let c = 0; c < 3; c++) {
-            let td = document.createElement("td");
-            td.style = "width: 30%;";
-            let inp = document.createElement("input");
-            inp.id = `${p}.${c}`
-            if (c == 2) {
-                inp.type = "number";
-            }
-            inp.style = "width: 100%;";
-            inp.value = contacts[p][seq[c]];
-            td.appendChild(inp);
-            tr.appendChild(td);
-        }
-        document.getElementById("contactsTable").appendChild(tr)
-        contactsNum += 1;
+        contactCreate([contacts[p].name, contacts[p].title, contacts[p].contact])
     }
 
     startup()
@@ -279,9 +262,9 @@ document.getElementById("aboutUpload").onclick = function(ev) {
 }
 
 // Contacts
-var contactsNum = 0;
-document.getElementById("contactsAdd").onclick = function() {
+function contactCreate(vals) {
     let tr = document.createElement("tr");
+    tr.id = "tr"+contactsNum
     tr.style = "width: 100%;";
     for (let c = 0; c < 3; c++) {
         let td = document.createElement("td");
@@ -292,11 +275,36 @@ document.getElementById("contactsAdd").onclick = function() {
             inp.type = "number";
         }
         inp.style = "width: 100%;";
+        inp.value = vals[c]
         td.appendChild(inp);
         tr.appendChild(td);
     }
+    let td = document.createElement("td");
+    td.style = "width: 10%;";
+    let delBtn = document.createElement("button");
+    delBtn.id = "del"+contactsNum
+    delBtn.innerHTML = "&nbsp;"
+    delBtn.style = "width: 100%; height: 100%; background-image: url('./assets/delete.svg'); background-position: center; background-repeat: no-repeat; background-size: contain;"
+    td.appendChild(delBtn)
+    tr.appendChild(td);
+    delBtn.value = contactsNum;
+    delBtn.onclick = function() {
+        for (let d = this.value; d < contactsNum; d++) {
+            for (let c = 0; c < 3; c++) {
+                if (d != contactsNum - 1) {
+                    document.getElementById(`${d}.${c}`).value = document.getElementById(`${parseInt(d) + 1}.${c}`).value
+                };
+            }
+        }
+        document.getElementById(`tr${contactsNum - 1}`).remove();
+        contactsNum -= 1;
+    }
     document.getElementById("contactsTable").appendChild(tr)
     contactsNum += 1;
+}
+var contactsNum = 0;
+document.getElementById("contactsAdd").onclick = function() {
+    contactCreate(["", "", ""])
 }
 document.getElementById("contactsUpload").onclick = function(eve) {
     let tempData = {};
