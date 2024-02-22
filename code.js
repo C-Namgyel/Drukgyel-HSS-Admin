@@ -1,7 +1,3 @@
-/*
-Add the delete feature for the contacts
-*/
-
 // Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
@@ -87,17 +83,22 @@ function getTime(x) {
 
 // Setup startup screen
 function startup() {
-    let urlParams = new URLSearchParams(window.location.search);
-    let initialValue = urlParams.get('page');
-    let par = initialValue || undefined; // Use a default value if the parameter is not presents
-    let availScreens = navList.map(item => item.label);
-    if (par != undefined && availScreens.includes(par)) {
-        document.getElementById(par + " Btn").click();
-    } else {
-        if (window.location.search.lastIndexOf('?') == -1) {
-            document.getElementById("School Profile Btn").click();
+    var pass = "DrukgyelHSS123"
+    if (prompt("Enter the password") == pass) {
+        let urlParams = new URLSearchParams(window.location.search);
+        let initialValue = urlParams.get('page');
+        let par = initialValue || undefined; // Use a default value if the parameter is not presents
+        let availScreens = navList.map(item => item.label);
+        if (par != undefined && availScreens.includes(par)) {
+            document.getElementById(par + " Btn").click();
+        } else {
+            if (window.location.search.lastIndexOf('?') == -1) {
+                document.getElementById("School Profile Btn").click();
+            };
         };
-    };
+    } else {
+        startup();
+    }
 }
 
 // Global Variables
@@ -170,7 +171,8 @@ getData("startup", function (res) {
 var navList = [
     { label: "School Profile", logo: "./assets/home.svg" },
     { label: "About School", logo: "./assets/home.svg" },
-    { label: "Contacts", logo: "./assets/contacts.svg" }
+    { label: "Contacts", logo: "./assets/contacts.svg" },
+    { label: "Staff Attendance", logo: "./assets/attendance.svg" }
 ];
 for (let d = 0; d < navList.length; d++) {
     let a = document.createElement("a");
