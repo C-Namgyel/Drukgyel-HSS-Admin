@@ -4,15 +4,25 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase
 import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAjpnWMiVf0inGKOiyiXG_AqcmvfVzfq1E",
-    authDomain: "drukgyel-hss-4a7f7.firebaseapp.com",
-    databaseURL: "https://drukgyel-hss-4a7f7-default-rtdb.firebaseio.com/",
-    projectId: "drukgyel-hss-4a7f7",
-    storageBucket: "drukgyel-hss-4a7f7.appspot.com",
-    messagingSenderId: "728432489451",
-    appId: "1:728432489451:web:83f9979d39672748df9fae",
-    measurementId: "G-RB5MMY67QV"
+    apiKey: "AIzaSyBUSb8D9xWqda-FGEVfTeEokSMTawyCrFI",
+    authDomain: "drukgyel-hss.firebaseapp.com",
+    databaseURL: "https://drukgyel-hss-default-rtdb.firebaseio.com",
+    projectId: "drukgyel-hss",
+    storageBucket: "drukgyel-hss.appspot.com",
+    messagingSenderId: "930189749346",
+    appId: "1:930189749346:web:22152d4d206ecd6b4ef53b",
+    measurementId: "G-D1QK09ZJEN"
 };
+// const firebaseConfig = {
+//     apiKey: "AIzaSyAjpnWMiVf0inGKOiyiXG_AqcmvfVzfq1E",
+//     authDomain: "drukgyel-hss-4a7f7.firebaseapp.com",
+//     databaseURL: "https://drukgyel-hss-4a7f7-default-rtdb.firebaseio.com/",
+//     projectId: "drukgyel-hss-4a7f7",
+//     storageBucket: "drukgyel-hss-4a7f7.appspot.com",
+//     messagingSenderId: "728432489451",
+//     appId: "1:728432489451:web:83f9979d39672748df9fae",
+//     measurementId: "G-RB5MMY67QV"
+// };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -83,8 +93,9 @@ function getTime(x) {
 
 // Setup startup screen
 function startup() {
-    var pass = "DrukgyelHSS123"
-    if (prompt("Enter the password") == pass) {
+    var pass = data.password;
+    console.log(loading)
+    if (loading != "Loaded" && prompt("Enter the password") == pass) {
         let urlParams = new URLSearchParams(window.location.search);
         let initialValue = urlParams.get('page');
         let par = initialValue || undefined; // Use a default value if the parameter is not presents
@@ -97,7 +108,9 @@ function startup() {
             };
         };
     } else {
-        startup();
+        if (loading != "Loaded") {
+            startup();
+        }
     }
 }
 
@@ -163,8 +176,9 @@ getData("startup", function (res) {
     for (let p in contacts) {
         contactCreate([contacts[p].name, contacts[p].title, contacts[p].contact])
     }
-
-    startup()
+    if (loading != "Loaded") {
+        startup()
+    }
 });
 
 // Setup the navigation drawer;
@@ -172,7 +186,8 @@ var navList = [
     { label: "School Profile", logo: "./assets/home.svg" },
     { label: "About School", logo: "./assets/home.svg" },
     { label: "Contacts", logo: "./assets/contacts.svg" },
-    { label: "Staff Attendance", logo: "./assets/attendance.svg" }
+    { label: "Staff Attendance", logo: "./assets/attendance.svg" },
+    { label: "Change Password", logo: "./assets/key.svg"}
 ];
 for (let d = 0; d < navList.length; d++) {
     let a = document.createElement("a");
@@ -350,4 +365,26 @@ document.getElementById("contactsUpload").onclick = function(eve) {
     } else {
         alert("Please fill up all the fields")
     }
+}
+
+// Change Password
+var space = 0;
+document.getElementById("changeInp").oninput = function(event) {
+    if (event.data == " ") {
+        space += 1;
+    }
+    if (this.value[0] == " " || space == 2) {
+        this.value = this.value.trim() + " ";
+        space = 0;
+    }
+}
+document.getElementById("changeBtn").onclick = function(ev) {
+    this.disabled = true;
+    this.innerHTML = "Changing";
+    document.getElementById("changeInp").disabled = true;
+    writeData("startup/password", document.getElementById("changeInp").value, function() {
+        ev.target.disabled = false;
+        ev.target.innerHTML = "Change";
+        document.getElementById("changeInp").disabled = false;
+    })
 }
