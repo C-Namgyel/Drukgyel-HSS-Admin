@@ -84,7 +84,6 @@ function getTime(x) {
 // Setup startup screen
 function startup() {
     var pass = data.password;
-    console.log(loading)
     if (loading != "Loaded" && prompt("Enter the password") == pass) {
         let urlParams = new URLSearchParams(window.location.search);
         let initialValue = urlParams.get('page');
@@ -254,7 +253,6 @@ document.getElementById("schoolProfileUpload").onclick = function(eve) {
 
 // About School
 document.getElementById("aboutDiv").oninput = function() {
-    console.log("change")
     let st = document.getElementById("About School").scrollTop;
     this.style.height = "0px"
     this.style.height = (this.scrollHeight + 10) + "px";
@@ -339,7 +337,6 @@ document.getElementById("contactsUpload").onclick = function(eve) {
     if (approved == true) {
         for (let i = 0; i < contactsNum; i++) {
             for (let j = 0; j < 3; j++) {
-                console.log(`${i}.${j}`)
                 document.getElementById(`${i}.${j}`).disabled = true;
             }
         }
@@ -349,7 +346,6 @@ document.getElementById("contactsUpload").onclick = function(eve) {
         writeData("startup/contacts", tempData, function() {
             for (let i = 0; i < contactsNum; i++) {
                 for (let j = 0; j < 3; j++) {
-                    console.log(`${i}.${j}`)
                     document.getElementById(`${i}.${j}`).disabled = false;
                 }
             }
