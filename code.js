@@ -84,7 +84,7 @@ function getTime(x) {
 // Setup startup screen
 function startup() {
     var pass = data.password;
-    if (loading != "Loaded" && prompt("Enter the password") == pass) {
+    if (prompt("Enter the password") == pass) {
         let urlParams = new URLSearchParams(window.location.search);
         let initialValue = urlParams.get('page');
         let par = initialValue || undefined; // Use a default value if the parameter is not presents
@@ -97,9 +97,7 @@ function startup() {
             };
         };
     } else {
-        if (loading != "Loaded") {
-            startup();
-        }
+        startup();
     }
 }
 
@@ -140,6 +138,7 @@ getData("startup", function (res) {
     if (splash == true) {
         document.getElementById("splashDiv").remove();
         loading = "Loaded";
+        startup()
     };
 
     // School Profile
@@ -160,18 +159,24 @@ getData("startup", function (res) {
     // About
     document.getElementById("aboutDiv").value = data.aboutSchool;
 
+    // Attendance
+    let attendance = data.attendance;
+    let sortedKeys = Object.keys(attendance)
+    .map(key => ({ key, length: key.length }))
+    .sort((a, b) => a.length - b.length)
+    .map(obj => obj.key);
+    attendance = sortedKeys.reduce((acc, key) => {
+        acc[key] = attendance[key];
+        return acc;
+    }, {});
+    for (let p of Object.keys(attendance)) {
+        attendanceCreate([p, attendance[p]])
+    }
+
     // Contacts
     let contacts = data.contacts;
     for (let p in contacts) {
         contactCreate([contacts[p].name, contacts[p].title, contacts[p].contact])
-    }
-    if (loading != "Loaded") {
-        startup()
-    }
-
-    // Change Password
-    if (data.password != undefined && data.password != null) {
-        document.getElementById("changeInp").value = data.password;
     }
 });
 
@@ -179,6 +184,7 @@ getData("startup", function (res) {
 var navList = [
     { label: "School Profile", logo: "./assets/home.svg" },
     { label: "About School", logo: "./assets/home.svg" },
+    { label: "Attendance", logo: "./assets/attendance.svg" },
     { label: "Contacts", logo: "./assets/contacts.svg" },
     { label: "Staff Attendance", logo: "./assets/attendance.svg" },
     { label: "Change Password", logo: "./assets/key.svg"}
@@ -253,6 +259,7 @@ document.getElementById("schoolProfileUpload").onclick = function(eve) {
 
 // About School
 document.getElementById("aboutDiv").oninput = function() {
+    console.log("change")
     let st = document.getElementById("About School").scrollTop;
     this.style.height = "0px"
     this.style.height = (this.scrollHeight + 10) + "px";
@@ -271,16 +278,100 @@ document.getElementById("aboutUpload").onclick = function(ev) {
     })
 }
 
+// Attendance
+function attendanceCreate(vals) {
+    let tr = document.createElement("tr");
+    tr.id = "attendanceTr"+attendanceNum
+    tr.style = "width: 100%;";
+    for (let c = 0; c < 2; c++) {
+        let td = document.createElement("td");
+        let inp = document.createElement("input");
+        inp.id = `attendance${attendanceNum}.${c}`
+        if (c == 0) {
+            td.style = "width: 30%;";
+        } else {
+            td.style = "width: 60%;";
+        }
+        inp.style = "width: 100%;";
+        inp.value = vals[c]
+        td.appendChild(inp);
+        tr.appendChild(td);
+    }
+    let td = document.createElement("td");
+    td.style = "width: 10%;";
+    let delBtn = document.createElement("button");
+    delBtn.id = "attendanceDel"+attendanceNum
+    delBtn.innerHTML = "&nbsp;"
+    delBtn.style = "width: 100%; height: 100%; background-image: url('./assets/delete.svg'); background-position: center; background-repeat: no-repeat; background-size: contain;"
+    td.appendChild(delBtn)
+    tr.appendChild(td);
+    delBtn.value = attendanceNum;
+    delBtn.onclick = function() {
+        for (let d = this.value; d < attendanceNum; d++) {
+            for (let c = 0; c < 2; c++) {
+                if (d != attendanceNum - 1) {
+                    document.getElementById(`attendance${d}.${c}`).value = document.getElementById(`attendance${parseInt(d) + 1}.${c}`).value
+                };
+            }
+        }
+        document.getElementById(`attendanceTr${attendanceNum - 1}`).remove();
+        attendanceNum -= 1;
+    }
+    document.getElementById("attendanceTable").appendChild(tr)
+    attendanceNum += 1;
+}
+var attendanceNum = 0;
+document.getElementById("attendanceAdd").onclick = function() {
+    attendanceCreate(["", "", ""])
+}
+document.getElementById("attendanceUpload").onclick = function(eve) {
+    let tempData = {};
+    for (let o = 0; o < attendanceNum; o++) {
+        tempData[document.getElementById(`attendance${o}.0`).value.trim()] = document.getElementById(`attendance${o}.1`).value.trim()
+    }
+    let approved = true;
+    for (let i = 0; i < attendanceNum; i++) {
+        for (let j = 0; j < 2; j++) {
+            if (document.getElementById(`attendance${i}.${j}`).value == undefined || document.getElementById(`attendance${i}.${j}`).value.trim() == "") {
+                approved = false;
+                break
+            }
+        }
+    }
+    if (approved == true) {
+        for (let i = 0; i < attendanceNum; i++) {
+            for (let j = 0; j < 2; j++) {
+                document.getElementById(`attendance${i}.${j}`).disabled = true;
+            }
+        }
+        this.disabled = true;
+        this.innerHTML = "Uploading";
+        document.getElementById("attendanceAdd").disabled = true;
+        writeData("startup/attendance", tempData, function() {
+            for (let i = 0; i < attendanceNum; i++) {
+                for (let j = 0; j < 2; j++) {
+                    document.getElementById(`attendance${i}.${j}`).disabled = false;
+                }
+            }
+            eve.target.disabled = false;
+            eve.target.innerHTML = "Upload";
+            document.getElementById("attendanceAdd").disabled = false;
+        })
+    } else {
+        alert("Please fill up all the fields")
+    }
+}
+
 // Contacts
 function contactCreate(vals) {
     let tr = document.createElement("tr");
-    tr.id = "tr"+contactsNum
+    tr.id = "contactTr"+contactsNum
     tr.style = "width: 100%;";
     for (let c = 0; c < 3; c++) {
         let td = document.createElement("td");
         td.style = "width: 30%;";
         let inp = document.createElement("input");
-        inp.id = `${contactsNum}.${c}`
+        inp.id = `contact${contactsNum}.${c}`
         if (c == 2) {
             inp.type = "number";
         }
@@ -292,7 +383,7 @@ function contactCreate(vals) {
     let td = document.createElement("td");
     td.style = "width: 10%;";
     let delBtn = document.createElement("button");
-    delBtn.id = "del"+contactsNum
+    delBtn.id = "contactDel"+contactsNum
     delBtn.innerHTML = "&nbsp;"
     delBtn.style = "width: 100%; height: 100%; background-image: url('./assets/delete.svg'); background-position: center; background-repeat: no-repeat; background-size: contain;"
     td.appendChild(delBtn)
@@ -302,11 +393,11 @@ function contactCreate(vals) {
         for (let d = this.value; d < contactsNum; d++) {
             for (let c = 0; c < 3; c++) {
                 if (d != contactsNum - 1) {
-                    document.getElementById(`${d}.${c}`).value = document.getElementById(`${parseInt(d) + 1}.${c}`).value
+                    document.getElementById(`contact${d}.${c}`).value = document.getElementById(`contact${parseInt(d) + 1}.${c}`).value
                 };
             }
         }
-        document.getElementById(`tr${contactsNum - 1}`).remove();
+        document.getElementById(`contactTr${contactsNum - 1}`).remove();
         contactsNum -= 1;
     }
     document.getElementById("contactsTable").appendChild(tr)
@@ -320,9 +411,9 @@ document.getElementById("contactsUpload").onclick = function(eve) {
     let tempData = {};
     for (let o = 0; o < contactsNum; o++) {
         tempData[o] = {
-            name: document.getElementById(`${o}.0`).value.trim(),
-            title: document.getElementById(`${o}.1`).value.trim(),
-            contact: document.getElementById(`${o}.2`).value.trim()
+            name: document.getElementById(`contact${o}.0`).value.trim(),
+            title: document.getElementById(`contact${o}.1`).value.trim(),
+            contact: document.getElementById(`contact${o}.2`).value.trim()
         }
     }
     let approved = true;
@@ -337,7 +428,7 @@ document.getElementById("contactsUpload").onclick = function(eve) {
     if (approved == true) {
         for (let i = 0; i < contactsNum; i++) {
             for (let j = 0; j < 3; j++) {
-                document.getElementById(`${i}.${j}`).disabled = true;
+                document.getElementById(`contact${i}.${j}`).disabled = true;
             }
         }
         this.disabled = true;
@@ -346,7 +437,7 @@ document.getElementById("contactsUpload").onclick = function(eve) {
         writeData("startup/contacts", tempData, function() {
             for (let i = 0; i < contactsNum; i++) {
                 for (let j = 0; j < 3; j++) {
-                    document.getElementById(`${i}.${j}`).disabled = false;
+                    document.getElementById(`contact${i}.${j}`).disabled = false;
                 }
             }
             eve.target.disabled = false;
