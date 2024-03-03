@@ -80,6 +80,18 @@ function getTime(x) {
     }
     return(`${hours}:${minutes} ${ampm}`)
 }
+function convertJSONtoXLSX(jsonContent, heading, sheet) {
+    var workbook = XLSX.utils.book_new();
+    var worksheet = XLSX.utils.json_to_sheet(jsonContent, { header: heading });
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheet);
+    return workbook;
+}
+function downloadXLSX(fileName, heading, content, sheet, colWidths) {
+    var workbook = convertJSONtoXLSX(content, heading, sheet);
+    var worksheet = workbook.Sheets[sheet];
+    worksheet['!cols'] = colWidths.map(width => ({ wch: width }));
+    XLSX.writeFile(workbook, fileName);
+}
 
 // Setup startup screen
 function startup() {
@@ -185,6 +197,9 @@ var navList = [
     { label: "School Profile", logo: "./assets/home.svg" },
     { label: "About School", logo: "./assets/home.svg" },
     { label: "Attendance", logo: "./assets/attendance.svg" },
+    { label: "Casual Leave", logo: "./assets/sandglass.svg" },
+    { label: "In Campus Leave", logo: "./assets/sandglass.svg" },
+    { label: "Study Report", logo: "./assets/report.svg" },
     { label: "Contacts", logo: "./assets/contacts.svg" },
     { label: "Staff Attendance", logo: "./assets/attendance.svg" },
     { label: "Change Password", logo: "./assets/key.svg"}
@@ -360,6 +375,91 @@ document.getElementById("attendanceUpload").onclick = function(eve) {
     } else {
         alert("Please fill up all the fields")
     }
+}
+
+// Casual Leave
+var casualLeaves = []
+document.getElementById("casualLeaveGet").onclick = function(ev) {
+    document.getElementById("casualLeaveDownload").disabled = true;
+    this.disabled = true;
+    this.innerHTML = "Retrieving Data. Please Wait.";
+    getData("casualLeaves", function(res) {
+        document.getElementById("casualLeaveDownload").disabled = false;
+        ev.target.disabled = false;
+        ev.target.innerHTML = "Retrieve Data";
+        casualLeaves = []
+        for (let d of Object.keys(res)) {
+            for (let t of Object.keys(res[d])) {
+                casualLeaves.push({
+                    "Date": d,
+                    "Name": res[d][t].name, 
+                    "Type of Leave": res[d][t].type,
+                    "Duration": res[d][t].duration,
+                    "Start Date": res[d][t].startDate,
+                    "End Date": res[d][t].endDate,
+                    "Reason": res[d][t].reason
+                })
+            }
+        }
+    })
+}
+document.getElementById("casualLeaveDownload").onclick = function() {
+    downloadXLSX(`Casual Leave Record ${getTodayDate()}.xlsx`, ["Date", "Name", "Type of Leave", "Duration", "Start Date", "End Date", "Reason"], casualLeaves, "Sheet1", [12, 25, 20, 10, 15, 15, 45])      
+}
+
+// In Campus Leave
+var inCampusLeaves = []
+document.getElementById("inCampusLeaveGet").onclick = function(ev) {
+    document.getElementById("inCampusLeaveDownload").disabled = true;
+    this.disabled = true;
+    this.innerHTML = "Retrieving Data. Please Wait.";
+    getData("inCampusLeaves", function(res) {
+        document.getElementById("inCampusLeaveDownload").disabled = false;
+        ev.target.disabled = false;
+        ev.target.innerHTML = "Retrieve Data";
+        inCampusLeaves = []
+        for (let d of Object.keys(res)) {
+            for (let t of Object.keys(res[d])) {
+                inCampusLeaves.push({
+                    "Date": res[d][t].date,
+                    "Time": res[d][t].time,
+                    "Name": res[d][t].name, 
+                    "Purpose": res[d][t].purpose,
+                    "Period": res[d][t].period
+                })
+            }
+        }
+    })
+}
+document.getElementById("inCampusLeaveDownload").onclick = function() {
+    downloadXLSX(`In Campus Leave Record ${getTodayDate()}.xlsx`, ["Date", "Time", "Name", "Purpose", "Period"], inCampusLeaves, "Sheet1", [12, 10, 25, 45, 45])      
+}
+
+// Study Report
+var studyReports = []
+document.getElementById("studyReportGet").onclick = function(ev) {
+    document.getElementById("studyReportDownload").disabled = true;
+    this.disabled = true;
+    this.innerHTML = "Retrieving Data. Please Wait.";
+    getData("studyReports", function(res) {
+        document.getElementById("studyReportDownload").disabled = false;
+        ev.target.disabled = false;
+        ev.target.innerHTML = "Retrieve Data";
+        studyReports = []
+        for (let d of Object.keys(res)) {
+            for (let t of Object.keys(res[d])) {
+                studyReports.push({
+                    "Date": d,
+                    "ToD": res[d][t].teacher,
+                    "Study": res[d][t].study,
+                    "Absentee": res[d][t].absentee.replaceAll("\n", ", \n")
+                })
+            }
+        }
+    })
+}
+document.getElementById("studyReportDownload").onclick = function() {
+    downloadXLSX(`Study Report Record ${getTodayDate()}.xlsx`, ["Date", "ToD", "Study", "Absentee"], studyReports, "Sheet1", [12, 25, 20, 50])      
 }
 
 // Contacts

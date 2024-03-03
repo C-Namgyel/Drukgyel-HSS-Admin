@@ -65,6 +65,30 @@
                 <button id="attendanceUpload">Upload</button>
             </div>
         </div>
+        <div id="Casual Leave" class="scrn" hidden>
+            <div style="width: 90%; position: absolute; left: 5%; top: 80px; text-align: center;">
+                Before downloading, you must get the data from the database. Click the 'Retrieve Data' button to get the data from the database.<br>
+                After the data is retrieved from the database, the download button will be enabled and you can download the data in the form of XLSX (Excel).<br><br>
+                <i style="color: red;">The data size may be very large</i><br><br>
+                <button id="casualLeaveGet">Retrieve Data</button><button id="casualLeaveDownload" disabled>Download Data</button>
+            </div>
+        </div>
+        <div id="In Campus Leave" class="scrn" hidden>
+            <div style="width: 90%; position: absolute; left: 5%; top: 80px; text-align: center;">
+                Before downloading, you must get the data from the database. Click the 'Retrieve Data' button to get the data from the database.<br>
+                After the data is retrieved from the database, the download button will be enabled and you can download the data in the form of XLSX (Excel).<br><br>
+                <i style="color: red;">The data size may be very large</i><br><br>
+                <button id="inCampusLeaveGet">Retrieve Data</button><button id="inCampusLeaveDownload" disabled>Download Data</button>
+            </div>
+        </div>
+        <div id="Study Report" class="scrn" hidden>
+            <div style="width: 90%; position: absolute; left: 5%; top: 80px; text-align: center;">
+                Before downloading, you must get the data from the database. Click the 'Retrieve Data' button to get the data from the database.<br>
+                After the data is retrieved from the database, the download button will be enabled and you can download the data in the form of XLSX (Excel).<br><br>
+                <i style="color: red;">The data size may be very large</i><br><br>
+                <button id="studyReportGet">Retrieve Data</button><button id="studyReportDownload" disabled>Download Data</button>
+            </div>
+        </div>
         <div id="Contacts" class="scrn" hidden>
             <div id="contactsDiv" style="width: 90%; position: absolute; left: 5%; top: 80px; text-align: left;">
                 <table border style="width: 100%; border-collapse: collapse;">
@@ -100,6 +124,7 @@ setTimeout(function() {
     }
 }, 5000)
     </script>
+    <script src="./xlsx.js"></script>
     <script src="./functions.js"></script>
     <script src="./code.js" type="module"></script>
 </html>
